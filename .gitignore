@@ -205,3 +205,55 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Environment & secrets
+.env
+*.env
+
+# Streamlit cache
+.streamlit/secrets.toml
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Cache
+__pycache__/
+.cache/
+*.pyc
+
+
+# Environment & secrets
+.env
+*.env
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Cache
+__pycache__/
+.cache/
+*.pyc
+
+# Environment & secrets
+.env
+*.env
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Cache
+__pycache__/
+.cache/
+*.pyc
