@@ -3,37 +3,49 @@
 import yfinance as yf
 import pandas as pd
 import streamlit as st
-from datetime import datetime
+import requests
+import time
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import INTERVAL_MAP
 
+# ─── Shared session with headers to avoid 429 blocks ─────────────────────────
 
-# ─── Cached Data Fetchers ────────────────────────────────────────────────────
+def _make_session():
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    })
+    return session
 
-@st.cache_data(ttl=60)  # cache for 60 seconds
+_SESSION = _make_session()
+
+
+# ─── Cached Data Fetchers ─────────────────────────────────────────────────────
+
+@st.cache_data(ttl=60)
 def fetch_stock_history(ticker: str, period: str) -> pd.DataFrame:
-    """
-    Fetch OHLCV historical data for a single ticker.
-    Returns a clean DataFrame or empty DataFrame on failure.
-    """
     try:
         interval = INTERVAL_MAP.get(period, "1d")
-        stock = yf.Ticker(ticker)
+        stock = yf.Ticker(ticker, session=_SESSION)
         df = stock.history(period=period, interval=interval)
 
         if df.empty:
             return pd.DataFrame()
 
-        # Clean up the DataFrame
         df.index = pd.to_datetime(df.index)
-        df.index = df.index.tz_localize(None)  # remove timezone
+        df.index = df.index.tz_localize(None)
         df = df[["Open", "High", "Low", "Close", "Volume"]]
         df.dropna(inplace=True)
         df.columns = ["open", "high", "low", "close", "volume"]
-
         return df
 
     except Exception as e:
@@ -41,15 +53,12 @@ def fetch_stock_history(ticker: str, period: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-@st.cache_data(ttl=300)  # cache for 5 minutes
+@st.cache_data(ttl=300)
 def fetch_stock_info(ticker: str) -> dict:
-    """
-    Fetch company metadata: name, sector, market cap, PE ratio, etc.
-    Returns a dict with safe fallback values.
-    """
     try:
-        stock = yf.Ticker(ticker)
-        info = stock.info
+        time.sleep(0.5)  # small delay to avoid rate limits
+        stock = yf.Ticker(ticker, session=_SESSION)
+        info  = stock.info
 
         return {
             "name":        info.get("longName", ticker),
@@ -79,27 +88,24 @@ def fetch_stock_info(ticker: str) -> dict:
 
 @st.cache_data(ttl=60)
 def fetch_live_price(ticker: str) -> dict:
-    """
-    Fetch the latest price, change, and % change for a ticker.
-    """
     try:
-        stock = yf.Ticker(ticker)
-        info  = stock.info
-
+        time.sleep(0.3)
+        stock   = yf.Ticker(ticker, session=_SESSION)
+        info    = stock.info
         current = info.get("currentPrice") or info.get("regularMarketPrice", 0)
         prev    = info.get("previousClose", current)
         change  = current - prev
         pct     = (change / prev * 100) if prev else 0
 
         return {
-            "price":   round(current, 2),
-            "change":  round(change, 2),
-            "pct":     round(pct, 2),
-            "prev":    round(prev, 2),
-            "high":    info.get("dayHigh",  current),
-            "low":     info.get("dayLow",   current),
-            "volume":  info.get("volume",   0),
-            "ticker":  ticker,
+            "price":  round(current, 2),
+            "change": round(change, 2),
+            "pct":    round(pct, 2),
+            "prev":   round(prev, 2),
+            "high":   info.get("dayHigh",  current),
+            "low":    info.get("dayLow",   current),
+            "volume": info.get("volume",   0),
+            "ticker": ticker,
         }
 
     except Exception:
@@ -111,24 +117,20 @@ def fetch_live_price(ticker: str) -> dict:
 
 @st.cache_data(ttl=300)
 def fetch_multiple_tickers(tickers: list, period: str) -> dict:
-    """
-    Fetch historical data for multiple tickers at once.
-    Returns a dict of {ticker: DataFrame}.
-    """
     results = {}
     for ticker in tickers:
         df = fetch_stock_history(ticker, period)
         if not df.empty:
             results[ticker] = df
+        time.sleep(0.3)  # stagger requests
     return results
 
 
 # ─── Helper Utilities ─────────────────────────────────────────────────────────
 
 def validate_ticker(ticker: str) -> bool:
-    """Check if a ticker symbol is valid and has data."""
     try:
-        stock = yf.Ticker(ticker.upper())
+        stock = yf.Ticker(ticker.upper(), session=_SESSION)
         info  = stock.info
         return bool(info.get("regularMarketPrice") or info.get("currentPrice"))
     except Exception:
@@ -136,7 +138,6 @@ def validate_ticker(ticker: str) -> bool:
 
 
 def format_market_cap(value: float) -> str:
-    """Format large numbers: 1500000000 → '$1.50B'"""
     if not value:
         return "N/A"
     if value >= 1_000_000_000_000:
@@ -149,7 +150,6 @@ def format_market_cap(value: float) -> str:
 
 
 def format_volume(value: float) -> str:
-    """Format volume: 85000000 → '85.00M'"""
     if not value:
         return "N/A"
     if value >= 1_000_000_000:
