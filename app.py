@@ -129,7 +129,7 @@ with st.sidebar:
             label_visibility="collapsed"
         ).upper().strip()
     with col2:
-        add_clicked = st.button("Add", use_container_width=True)
+        add_clicked = st.button("Add", width='stretch')
 
     if add_clicked and new_ticker:
         if new_ticker in st.session_state.tickers:
@@ -153,7 +153,7 @@ with st.sidebar:
             if st.button(
                 f"{'▶ ' if active else '   '}{ticker}",
                 key=f"btn_{ticker}",
-                use_container_width=True,
+                width='stretch',
             ):
                 st.session_state.active_ticker = ticker
                 st.rerun()
@@ -296,17 +296,17 @@ with tab1:
             show_volume  = show_volume,
             show_bollinger = show_bb,
         )
-        st.plotly_chart(fig_price, use_container_width=True)
+        st.plotly_chart(fig_price, width='stretch')
 
         # RSI
         if show_rsi:
             fig_rsi = build_rsi_chart(df, ticker)
-            st.plotly_chart(fig_rsi, use_container_width=True)
+            st.plotly_chart(fig_rsi, width='stretch')
 
         # MACD
         if show_macd:
             fig_macd = build_macd_chart(df, ticker)
-            st.plotly_chart(fig_macd, use_container_width=True)
+            st.plotly_chart(fig_macd, width='stretch')
 
     # Last updated timestamp
     st.caption(f"Last updated: {time.strftime('%H:%M:%S')}")
@@ -333,7 +333,7 @@ with tab2:
 
         if compare_data:
             fig_cmp = build_comparison_chart(compare_data)
-            st.plotly_chart(fig_cmp, use_container_width=True)
+            st.plotly_chart(fig_cmp, width='stretch')
 
             # Stats table
             st.markdown("#### Period Summary")
@@ -358,7 +358,7 @@ with tab2:
                 import pandas as pd
                 st.dataframe(
                     pd.DataFrame(rows).set_index("Ticker"),
-                    use_container_width=True,
+                    width='stretch',
                 )
 
 
