@@ -22,3 +22,11 @@ from .errors import (
     show_loading_skeleton,
     validate_and_show_error,
 )
+from .sentiment import (
+    load_sentiment_model,
+    fetch_news,
+    analyze_sentiment,
+    get_overall_sentiment,
+    build_sentiment_bar_chart,
+    build_sentiment_donut,
+)

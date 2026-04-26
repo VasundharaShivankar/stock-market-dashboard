@@ -471,7 +471,7 @@ if not ticker:
     st.stop()
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3 = st.tabs(["📊 Chart", "🔁 Compare", "ℹ️ Info"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Chart", "🔁 Compare", "ℹ️ Info", "🧠 Sentiment"])
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -645,3 +645,160 @@ with tab3:
             f"{info_data['description'][:800]}...</div>",
             unsafe_allow_html=True
         )
+
+
+# ════════════════════════════════════════════════════════════════════
+# TAB 4 — SENTIMENT
+# ════════════════════════════════════════════════════════════════════
+with tab4:
+    from src.sentiment import (
+        analyze_sentiment, get_overall_sentiment,
+        build_sentiment_bar_chart, build_sentiment_donut,
+        load_sentiment_model,
+    )
+
+    st.markdown("### 🧠 AI News Sentiment")
+    st.caption(
+        f"FinBERT analysis on latest {ticker} headlines · "
+        "Model: ProsusAI/finbert"
+    )
+
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    # Warn that first load downloads the model
+    st.info(
+        "⚡ First load downloads the FinBERT model (~500MB). "
+        "Subsequent loads are instant.",
+        icon="ℹ️",
+    )
+
+    with st.spinner("Running AI sentiment analysis on latest news..."):
+        df_sent   = analyze_sentiment(ticker)
+        overall   = get_overall_sentiment(df_sent)
+
+    if df_sent.empty:
+        from src.errors import show_empty_state
+        show_empty_state(
+            f"No news found for {ticker}. Try a different stock.",
+            icon="📰"
+        )
+    else:
+        # ── Overall metrics row ───────────────────────────────────────
+        col_donut, col_stats = st.columns([1, 1])
+
+        with col_donut:
+            fig_donut = build_sentiment_donut(overall)
+            st.plotly_chart(fig_donut, use_container_width=True)
+
+        with col_stats:
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            label_color = {
+                "positive": "#10B981",
+                "negative": "#EF4444",
+                "neutral":  "#6B7280",
+            }[overall["label"]]
+
+            sign = "+" if overall["score"] >= 0 else ""
+
+            st.markdown(
+                f"""
+                <div style='
+                    background: rgba(255,255,255,0.02);
+                    border: 1px solid rgba(255,255,255,0.06);
+                    border-radius: 14px;
+                    padding: 1.5rem;
+                    margin-bottom: 12px;
+                '>
+                    <div style='font-size:0.72rem;letter-spacing:0.06em;
+                                text-transform:uppercase;color:#5A6478;
+                                font-family:Sora,sans-serif;margin-bottom:8px'>
+                        Overall Sentiment Score
+                    </div>
+                    <div style='font-size:2.8rem;font-weight:500;
+                                font-family:JetBrains Mono,monospace;
+                                color:{label_color};line-height:1'>
+                        {sign}{overall["score"]}
+                    </div>
+                    <div style='font-size:0.8rem;color:#5A6478;margin-top:6px'>
+                        Based on {overall["count"]} headlines
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.metric("Positive", f"{overall['positive']}%")
+            with c2:
+                st.metric("Neutral",  f"{overall['neutral']}%")
+            with c3:
+                st.metric("Negative", f"{overall['negative']}%")
+
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+        # ── Per-headline bar chart ────────────────────────────────────
+        fig_bar = build_sentiment_bar_chart(df_sent, ticker)
+        if fig_bar:
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+        # ── News cards ────────────────────────────────────────────────
+        st.markdown("#### Latest Headlines")
+
+        sentiment_colors = {
+            "positive": ("#10B981", "rgba(16,185,129,0.08)", "rgba(16,185,129,0.2)"),
+            "negative": ("#EF4444", "rgba(239,68,68,0.08)",  "rgba(239,68,68,0.2)"),
+            "neutral":  ("#6B7280", "rgba(107,114,128,0.08)","rgba(107,114,128,0.2)"),
+        }
+
+        for _, row in df_sent.iterrows():
+            color, bg, border = sentiment_colors[row["sentiment"]]
+            link_html = (
+                f"<a href='{row['link']}' target='_blank' "
+                f"style='color:{color};font-size:0.75rem;text-decoration:none;'>"
+                f"Read article →</a>"
+            ) if row["link"] else ""
+
+            st.markdown(
+                f"""
+                <div style='
+                    background: {bg};
+                    border: 1px solid {border};
+                    border-left: 3px solid {color};
+                    border-radius: 10px;
+                    padding: 0.9rem 1.1rem;
+                    margin-bottom: 8px;
+                '>
+                    <div style='font-size:0.88rem;font-weight:500;
+                                color:#C4CDD8;margin-bottom:4px;
+                                font-family:Sora,sans-serif;line-height:1.4'>
+                        {row["title"]}
+                    </div>
+                    <div style='display:flex;align-items:center;
+                                gap:12px;margin-top:6px'>
+                        <span style='font-size:0.72rem;color:#5A6478'>
+                            {row["publisher"]} · {row["published"]}
+                        </span>
+                        <span style='
+                            background:{bg};border:1px solid {border};
+                            color:{color};font-size:0.68rem;font-weight:600;
+                            padding:2px 8px;border-radius:20px;
+                            text-transform:uppercase;letter-spacing:0.05em'>
+                            {row["sentiment"]} {row["confidence"]*100:.0f}%
+                        </span>
+                        {link_html}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.caption(
+            f"Powered by FinBERT (ProsusAI) · "
+            f"{overall['count']} articles analysed · "
+            f"Refreshes every 5 minutes"
+        )
+        
