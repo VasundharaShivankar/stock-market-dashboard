@@ -26,83 +26,320 @@ st.set_page_config(
 )
 
 # ─── Custom CSS ───────────────────────────────────────────────────────────────
-
 st.markdown("""
 <style>
-/* Dark background */
-.stApp { background-color: #0E1117; }
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* Metric cards */
-[data-testid="metric-container"] {
-    background    : #1E2329;
-    border        : 1px solid #2A2E39;
-    border-radius : 8px;
-    padding       : 12px 16px;
+/* ── Base ── */
+html, body, .stApp {
+    font-family: 'Sora', sans-serif;
+    background: #080C14;
+    color: #E8EDF5;
 }
 
-/* Positive/negative delta colors */
+/* ── Animated gradient background ── */
+.stApp::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(ellipse 60% 50% at 20% 20%, rgba(56,189,248,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 80%, rgba(99,102,241,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 60% 30%, rgba(16,185,129,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: #0D1117 !important;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+[data-testid="stSidebar"] > div {
+    padding-top: 1.5rem;
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stMarkdown p {
+    color: #8B97A8 !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-family: 'Sora', sans-serif !important;
+}
+
+/* ── Sidebar inputs ── */
+[data-testid="stSidebar"] input {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 10px !important;
+    color: #E8EDF5 !important;
+    font-family: 'Sora', sans-serif !important;
+    font-size: 0.9rem !important;
+    transition: border-color 0.2s ease;
+}
+[data-testid="stSidebar"] input:focus {
+    border-color: rgba(56,189,248,0.4) !important;
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.08) !important;
+}
+
+/* ── Sidebar buttons ── */
+[data-testid="stSidebar"] .stButton button {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 10px !important;
+    color: #C4CDD8 !important;
+    font-family: 'Sora', sans-serif !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    padding: 0.4rem 0.75rem !important;
+}
+[data-testid="stSidebar"] .stButton button:hover {
+    background: rgba(56,189,248,0.08) !important;
+    border-color: rgba(56,189,248,0.25) !important;
+    color: #38BDF8 !important;
+    transform: translateX(2px);
+}
+
+/* ── Add button accent ── */
+[data-testid="stSidebar"] .stButton:last-of-type button {
+    background: rgba(56,189,248,0.1) !important;
+    border-color: rgba(56,189,248,0.3) !important;
+    color: #38BDF8 !important;
+}
+
+/* ── Selectbox & Radio ── */
+[data-testid="stSidebar"] .stSelectbox > div > div,
+[data-testid="stSidebar"] .stRadio > div {
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 10px !important;
+    color: #C4CDD8 !important;
+    font-family: 'Sora', sans-serif !important;
+}
+
+/* ── Checkboxes ── */
+[data-testid="stSidebar"] .stCheckbox label {
+    color: #8B97A8 !important;
+    font-size: 0.82rem !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+/* ── Main content area ── */
+.main .block-container {
+    padding: 1.5rem 2rem 2rem;
+    max-width: 1400px;
+}
+
+/* ── Metric cards ── */
+[data-testid="metric-container"] {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+[data-testid="metric-container"]:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.12);
+}
+[data-testid="stMetricLabel"] {
+    font-family: 'Sora', sans-serif !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: #5A6478 !important;
+    font-weight: 500 !important;
+}
+[data-testid="stMetricValue"] {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    color: #E8EDF5 !important;
+}
 [data-testid="stMetricDelta"] svg { display: none; }
 
-/* Sidebar */
-[data-testid="stSidebar"] { background-color: #161B22; }
-[data-testid="stSidebar"] .stSelectbox label,
-[data-testid="stSidebar"] .stMultiselect label,
-[data-testid="stSidebar"] .stCheckbox label { color: #C9D1D9; }
-
-/* Tab styling */
+/* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
-    gap              : 4px;
-    background-color : #161B22;
-    border-radius    : 8px;
-    padding          : 4px;
+    gap: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 4px;
+    width: fit-content;
 }
 .stTabs [data-baseweb="tab"] {
-    background-color : transparent;
-    border-radius    : 6px;
-    color            : #8B949E;
-    padding          : 6px 18px;
+    background: transparent;
+    border-radius: 9px;
+    color: #5A6478;
+    padding: 7px 20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    border: none !important;
+}
+.stTabs [data-baseweb="tab"]:hover {
+    color: #A8B5C4;
+    background: rgba(255,255,255,0.04);
 }
 .stTabs [aria-selected="true"] {
-    background-color : #21262D;
-    color            : #E6EDF3;
+    background: rgba(56,189,248,0.1) !important;
+    color: #38BDF8 !important;
+    border: 1px solid rgba(56,189,248,0.2) !important;
 }
+.stTabs [data-baseweb="tab-highlight"] { display: none; }
+.stTabs [data-baseweb="tab-border"]    { display: none; }
 
-/* Price header */
+/* ── Price header ── */
 .price-header {
-    font-size   : 2.4rem;
-    font-weight : 700;
-    color       : #E6EDF3;
-    line-height : 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: #E8EDF5;
+    line-height: 1;
+    letter-spacing: -0.02em;
 }
-.price-change-pos { color: #26A69A; font-size: 1.1rem; }
-.price-change-neg { color: #EF5350; font-size: 1.1rem; }
+.price-change-pos {
+    font-family: 'JetBrains Mono', monospace;
+    color: #10B981;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-top: 6px;
+}
+.price-change-neg {
+    font-family: 'JetBrains Mono', monospace;
+    color: #EF4444;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-top: 6px;
+}
 
-/* Ticker badge */
+/* ── Ticker badge ── */
 .ticker-badge {
-    display          : inline-block;
-    background-color : #21262D;
-    color            : #58A6FF;
-    border           : 1px solid #30363D;
-    border-radius    : 6px;
-    padding          : 2px 10px;
-    font-size        : 0.85rem;
-    font-weight      : 600;
-    margin-bottom    : 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(56,189,248,0.08);
+    color: #38BDF8;
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 8px;
+    padding: 3px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
 }
 
-/* Divider */
+/* ── Company name ── */
+.company-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #C4CDD8;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* ── Section divider ── */
 .section-divider {
-    border     : none;
-    border-top : 1px solid #21262D;
-    margin     : 16px 0;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: 1.25rem 0;
 }
 
-/* Hide streamlit branding */
+/* ── Info cards in Tab 3 ── */
+.info-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+}
+
+/* ── Dataframe ── */
+[data-testid="stDataFrame"] {
+    background: rgba(255,255,255,0.02) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 12px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ── Spinner ── */
+.stSpinner > div {
+    border-color: #38BDF8 transparent transparent transparent !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── App logo text ── */
+.app-logo {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #E8EDF5;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.25rem;
+}
+.app-tagline {
+    font-size: 0.72rem;
+    color: #3D4A5C;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ── Caption / footer text ── */
+.stCaption, [data-testid="stCaptionContainer"] p {
+    font-family: 'Sora', sans-serif !important;
+    color: #3D4A5C !important;
+    font-size: 0.72rem !important;
+}
+
+/* ── Warning / error / info boxes ── */
+.stAlert {
+    border-radius: 12px !important;
+    font-family: 'Sora', sans-serif !important;
+    border: none !important;
+}
+
+/* ── Hide branding ── */
 #MainMenu { visibility: hidden; }
 footer    { visibility: hidden; }
+header    { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
-
 
 # ─── Session State Defaults ───────────────────────────────────────────────────
 
@@ -117,7 +354,11 @@ if "last_refresh"  not in st.session_state:
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown(f"## {APP_ICON} {APP_TITLE}")
+    st.markdown(
+        f"<div class='app-logo'>{APP_ICON} {APP_TITLE}</div>"
+        f"<div class='app-tagline'>Live Market Data</div>",
+        unsafe_allow_html=True
+    )
     st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
 
     # ── Add ticker ────────────────────────────────────────────────────────────
@@ -247,8 +488,7 @@ with tab1:
     with col_name:
         st.markdown(f"<div class='ticker-badge'>{ticker}</div>", unsafe_allow_html=True)
         st.markdown(
-            f"<div style='color:#8B949E;font-size:0.85rem'>"
-            f"{info_data['name']}</div>",
+            f"<div class='company-name'>{info_data['name']}</div>",
             unsafe_allow_html=True
         )
 
