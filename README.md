@@ -72,5 +72,3 @@ streamlit run app.py
 > ⚡ First run downloads the FinBERT model (~500MB). Subsequent runs are instant.
 
 ---
-
-## 📁 Project Structure
