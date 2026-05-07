@@ -9,35 +9,40 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import COLORS
 from src.indicators import add_all_indicators
 
+BACKGROUND = "#FFFFFF"
+GRID       = "#E2E6ED"
+TEXT       = "#6B7A99"
 
 # ─── Layout Defaults ──────────────────────────────────────────────────────────
 
 LAYOUT = dict(
-    paper_bgcolor = COLORS["background"],
-    plot_bgcolor  = COLORS["background"],
-    font          = dict(color=COLORS["text"], size=12),
+    paper_bgcolor = "#FFFFFF",
+    plot_bgcolor  = "#FFFFFF",
+    font          = dict(color="#6B7280", size=12, family="Inter, sans-serif"),
     xaxis         = dict(
-        gridcolor     = COLORS["grid"],
-        showgrid      = True,
-        zeroline      = False,
-        rangeslider   = dict(visible=False),
+        gridcolor   = "#F3F4F6",
+        showgrid    = True,
+        zeroline    = False,
+        linecolor   = "#E5E7EB",
+        rangeslider = dict(visible=False),
     ),
-    yaxis         = dict(
-        gridcolor = COLORS["grid"],
+    yaxis = dict(
+        gridcolor = "#F3F4F6",
         showgrid  = True,
         zeroline  = False,
+        linecolor = "#E5E7EB",
         side      = "right",
     ),
-    margin        = dict(l=10, r=60, t=40, b=10),
-    legend        = dict(
-        bgcolor     = "rgba(0,0,0,0)",
-        bordercolor = COLORS["grid"],
+    margin  = dict(l=10, r=60, t=40, b=10),
+    legend  = dict(
+        bgcolor     = "rgba(255,255,255,0.9)",
+        bordercolor = "#E5E7EB",
         borderwidth = 1,
         x=0, y=1,
+        font=dict(size=11),
     ),
     hovermode = "x unified",
 )
-
 
 # ─── Main Price Chart ─────────────────────────────────────────────────────────
 

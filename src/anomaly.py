@@ -6,9 +6,9 @@ import streamlit as st
 from sklearn.ensemble import IsolationForest
 import plotly.graph_objects as go
 
-BACKGROUND = "#080C14"
-GRID       = "#1A2030"
-TEXT       = "#8B97A8"
+BACKGROUND = "#FFFFFF"
+GRID       = "#E2E6ED"
+TEXT       = "#6B7A99"
 
 
 def build_features(df: pd.DataFrame) -> pd.DataFrame:

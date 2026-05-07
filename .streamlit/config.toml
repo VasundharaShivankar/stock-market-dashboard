@@ -1,13 +1,16 @@
 [theme]
-base                = "dark"
-backgroundColor     = "#0E1117"
-secondaryBackgroundColor = "#161B22"
-primaryColor        = "#58A6FF"
-textColor           = "#E6EDF3"
+base                     = "light"
+backgroundColor          = "#F7F8FA"
+secondaryBackgroundColor = "#FFFFFF"
+primaryColor             = "#0033A0"
+textColor                = "#0A0F1E"
 
 [server]
-headless    = true
-runOnSave   = true
+headless   = true
+runOnSave  = true
 
 [browser]
 gatherUsageStats = false
+
+[ui]
+hideSidebarNav = false
