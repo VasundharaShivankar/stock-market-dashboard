@@ -471,7 +471,7 @@ if not ticker:
     st.stop()
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Chart", "🔁 Compare", "ℹ️ Info", "🧠 Sentiment"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Chart", "🔁 Compare", "ℹ️ Info", "🧠 Sentiment", "🚨 Anomaly"])
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -802,3 +802,98 @@ with tab4:
             f"Refreshes every 5 minutes"
         )
         
+# ════════════════════════════════════════════════════════════════════
+# TAB 5 — ANOMALY DETECTION
+# ════════════════════════════════════════════════════════════════════
+with tab5:
+    from src.anomaly import (
+        detect_anomalies, get_anomaly_summary,
+        build_anomaly_price_chart,
+        build_anomaly_score_chart,
+        build_feature_importance_chart,
+    )
+
+    st.markdown("### 🚨 Anomaly Detection")
+    st.caption(f"Isolation Forest ML model · {ticker}")
+    st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+    col_ctrl1, col_ctrl2 = st.columns([2, 1])
+    with col_ctrl1:
+        st.info("🤖 Isolation Forest trains on 7 engineered features: returns, volatility, volume spikes, price gaps and more.")
+    with col_ctrl2:
+        contamination = st.slider("Sensitivity (% flagged)", 1, 15, 5, 1) / 100
+
+    with st.spinner("Training Isolation Forest model..."):
+        df_anom = detect_anomalies(ticker, period_code, contamination)
+        summary = get_anomaly_summary(df_anom)
+
+    if df_anom.empty:
+        st.error(f"Not enough data for {ticker}. Need 30+ bars. Try a longer period.")
+    else:
+        c1, c2, c3, c4, c5 = st.columns(5)
+        with c1: st.metric("Total Bars",    summary["total"])
+        with c2: st.metric("Anomalies",     summary["anomalies"])
+        with c3: st.metric("Flagged %",     f"{summary['pct']}%")
+        with c4: st.metric("Last Anomaly",  summary["last_anomaly"])
+        with c5: st.metric("High Severity", summary["high"])
+
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+        sev1, sev2, sev3 = st.columns(3)
+        with sev1:
+            st.markdown(f"""<div style='background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);
+                border-left:3px solid #EF4444;border-radius:10px;padding:1rem;text-align:center'>
+                <div style='font-size:0.72rem;text-transform:uppercase;color:#5A6478'>High Severity</div>
+                <div style='font-size:2rem;font-weight:500;font-family:JetBrains Mono,monospace;color:#EF4444'>{summary['high']}</div>
+                </div>""", unsafe_allow_html=True)
+        with sev2:
+            st.markdown(f"""<div style='background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);
+                border-left:3px solid #F59E0B;border-radius:10px;padding:1rem;text-align:center'>
+                <div style='font-size:0.72rem;text-transform:uppercase;color:#5A6478'>Medium Severity</div>
+                <div style='font-size:2rem;font-weight:500;font-family:JetBrains Mono,monospace;color:#F59E0B'>{summary['medium']}</div>
+                </div>""", unsafe_allow_html=True)
+        with sev3:
+            st.markdown(f"""<div style='background:rgba(107,114,128,0.08);border:1px solid rgba(107,114,128,0.25);
+                border-left:3px solid #6B7280;border-radius:10px;padding:1rem;text-align:center'>
+                <div style='font-size:0.72rem;text-transform:uppercase;color:#5A6478'>Low Severity</div>
+                <div style='font-size:2rem;font-weight:500;font-family:JetBrains Mono,monospace;color:#6B7280'>{summary['low']}</div>
+                </div>""", unsafe_allow_html=True)
+
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+
+        st.plotly_chart(build_anomaly_price_chart(df_anom, ticker), use_container_width=True)
+        st.plotly_chart(build_anomaly_score_chart(df_anom, ticker), use_container_width=True)
+
+        col_feat1, col_feat2 = st.columns([1, 1])
+        with col_feat1:
+            st.plotly_chart(build_feature_importance_chart(df_anom, ticker), use_container_width=True)
+        with col_feat2:
+            st.markdown("#### What each feature means")
+            st.markdown("""
+| Feature | Description |
+|---|---|
+| `return` | Daily % price change |
+| `high_low_range` | Intraday price spread |
+| `open_close` | Open to close move |
+| `volume_change` | Volume % change |
+| `volume_zscore` | Volume vs 20-day average |
+| `rolling_std` | 5-day return volatility |
+| `gap` | Overnight price gap |
+""")
+
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
+        st.markdown("#### Flagged Anomaly Events")
+
+        anomaly_events = df_anom[df_anom["is_anomaly"]].copy()
+        if anomaly_events.empty:
+            st.info("No anomalies detected at current sensitivity level.")
+        else:
+            anomaly_events.index = anomaly_events.index.strftime("%Y-%m-%d")
+            display_df = anomaly_events[["open","high","low","close","volume","anomaly_score","severity"]].copy()
+            display_df.columns = ["Open","High","Low","Close","Volume","Score","Severity"]
+            display_df["Close"] = display_df["Close"].map("${:.2f}".format)
+            display_df["Score"] = display_df["Score"].map("{:.4f}".format)
+            display_df["Volume"] = display_df["Volume"].map("{:,.0f}".format)
+            st.dataframe(display_df, use_container_width=True)
+
+        st.caption(f"Isolation Forest · n_estimators=200 · contamination={contamination:.0%} · {summary['total']} bars")
