@@ -379,7 +379,68 @@ footer    { visibility: hidden; }
 header    { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
- 
+
+
+# ─── Header ───────────────────────────────────────────────────────────────────
+
+st.markdown("""
+<div style='
+    background: #1B3A6B;
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: -2rem -2rem 1.5rem -2rem;
+    border-bottom: 1px solid #162f5a;
+'>
+    <div style='display:flex;align-items:center;gap:16px'>
+        <div style='
+            background: #FFFFFF;
+            border-radius: 6px;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        '>📈</div>
+        <div>
+            <div style='
+                font-family: JetBrains Mono, monospace;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #FFFFFF;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            '>Stock Market Dashboard</div>
+            <div style='
+                font-size: 0.65rem;
+                color: rgba(255,255,255,0.5);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                font-weight: 500;
+            '>Market Intelligence Platform</div>
+        </div>
+    </div>
+    <div style='display:flex;align-items:center;gap:20px'>
+        <div style='
+            font-size:0.7rem;color:rgba(255,255,255,0.5);
+            font-family:Inter,sans-serif;letter-spacing:.04em
+        '>Data via Yahoo Finance</div>
+        <div style='
+            display:inline-flex;align-items:center;gap:5px;
+            font-size:0.65rem;font-weight:700;letter-spacing:0.08em;
+            text-transform:uppercase;color:#4ADE80;
+            background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);
+            border-radius:20px;padding:3px 10px;
+        '>
+            <span style='width:5px;height:5px;background:#4ADE80;border-radius:50%;
+            display:inline-block;animation:hdr-blink 2s infinite'></span>
+            Live
+        </div>
+    </div>
+</div>
+<style>
+@keyframes hdr-blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+</style>
+""", unsafe_allow_html=True)
  
 # ─── Session State ─────────────────────────────────────────────────────────────
  
@@ -985,3 +1046,102 @@ with tab5:
             f"Isolation Forest  ·  n_estimators=200  ·  "
             f"contamination={contamination:.0%}  ·  {summary['total']} bars analysed"
         )
+
+# ─── Footer ───────────────────────────────────────────────────────────────────
+
+st.markdown("""
+<div style='
+    background: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+    margin: 3rem -2rem -3rem -2rem;
+    padding: 1.5rem 2rem;
+'>
+    <div style='
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    '>
+        <div style='display:flex;align-items:center;gap:12px'>
+            <div style='
+                background:#1B3A6B;border-radius:5px;
+                width:26px;height:26px;display:flex;
+                align-items:center;justify-content:center;
+                font-size:0.8rem
+            '>📈</div>
+            <div>
+                <div style='
+                    font-size:0.78rem;font-weight:700;
+                    color:#111827;font-family:Inter,sans-serif;
+                    letter-spacing:-0.01em
+                '>Stock Market Dashboard</div>
+                <div style='
+                    font-size:0.65rem;color:#9CA3AF;
+                    font-family:Inter,sans-serif
+                '>Real-time market data & AI analytics</div>
+            </div>
+        </div>
+
+        <div style='display:flex;align-items:center;gap:24px;flex-wrap:wrap'>
+            <div style='text-align:center'>
+                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Charts</div>
+                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Plotly</div>
+            </div>
+            <div style='width:1px;height:24px;background:#E5E7EB'></div>
+            <div style='text-align:center'>
+                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Data</div>
+                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Yahoo Finance</div>
+            </div>
+            <div style='width:1px;height:24px;background:#E5E7EB'></div>
+            <div style='text-align:center'>
+                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>AI Model</div>
+                <div style='font-size:0.75rem;font-weight:500;color:#374151'>FinBERT</div>
+            </div>
+            <div style='width:1px;height:24px;background:#E5E7EB'></div>
+            <div style='text-align:center'>
+                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>ML Model</div>
+                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Isolation Forest</div>
+            </div>
+            <div style='width:1px;height:24px;background:#E5E7EB'></div>
+            <div style='text-align:center'>
+                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Framework</div>
+                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Streamlit</div>
+            </div>
+        </div>
+
+        <div style='text-align:right'>
+            <div style='font-size:0.72rem;color:#6B7280;font-family:Inter,sans-serif'>
+                Built by <span style='font-weight:600;color:#1B3A6B'>Vasundhara Shivankar</span>
+            </div>
+            <div style='font-size:0.65rem;color:#9CA3AF;margin-top:2px'>
+                6-Month Python Developer Internship · Codec Technologies
+            </div>
+        </div>
+    </div>
+
+    <div style='
+        margin-top:1rem;
+        padding-top:1rem;
+        border-top:1px solid #F3F4F6;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        flex-wrap:wrap;
+        gap:8px;
+    '>
+        <div style='font-size:0.65rem;color:#9CA3AF;font-family:Inter,sans-serif'>
+            Data refreshes every 60 seconds · Charts powered by Plotly · 
+            AI analysis by FinBERT (ProsusAI) · Anomaly detection by Isolation Forest
+        </div>
+        <div style='font-size:0.65rem;color:#9CA3AF;font-family:Inter,sans-serif'>
+            ⚠ For informational purposes only. Not financial advice.
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
