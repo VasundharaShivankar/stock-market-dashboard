@@ -1049,99 +1049,195 @@ with tab5:
 
 # ─── Footer ───────────────────────────────────────────────────────────────────
 
-st.markdown("""
-<div style='
-    background: #FFFFFF;
-    border-top: 1px solid #E5E7EB;
-    margin: 3rem -2rem -3rem -2rem;
-    padding: 1.5rem 2rem;
-'>
-    <div style='
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-    '>
-        <div style='display:flex;align-items:center;gap:12px'>
-            <div style='
-                background:#1B3A6B;border-radius:5px;
-                width:26px;height:26px;display:flex;
-                align-items:center;justify-content:center;
-                font-size:0.8rem
-            '>📈</div>
-            <div>
-                <div style='
-                    font-size:0.78rem;font-weight:700;
-                    color:#111827;font-family:Inter,sans-serif;
-                    letter-spacing:-0.01em
-                '>Stock Market Dashboard</div>
-                <div style='
-                    font-size:0.65rem;color:#9CA3AF;
-                    font-family:Inter,sans-serif
-                '>Real-time market data & AI analytics</div>
-            </div>
-        </div>
+# ─── Footer ───────────────────────────────────────────────────────────────────
 
-        <div style='display:flex;align-items:center;gap:24px;flex-wrap:wrap'>
-            <div style='text-align:center'>
-                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Charts</div>
-                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Plotly</div>
-            </div>
-            <div style='width:1px;height:24px;background:#E5E7EB'></div>
-            <div style='text-align:center'>
-                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Data</div>
-                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Yahoo Finance</div>
-            </div>
-            <div style='width:1px;height:24px;background:#E5E7EB'></div>
-            <div style='text-align:center'>
-                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>AI Model</div>
-                <div style='font-size:0.75rem;font-weight:500;color:#374151'>FinBERT</div>
-            </div>
-            <div style='width:1px;height:24px;background:#E5E7EB'></div>
-            <div style='text-align:center'>
-                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>ML Model</div>
-                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Isolation Forest</div>
-            </div>
-            <div style='width:1px;height:24px;background:#E5E7EB'></div>
-            <div style='text-align:center'>
-                <div style='font-size:0.6rem;font-weight:700;letter-spacing:.1em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:2px'>Framework</div>
-                <div style='font-size:0.75rem;font-weight:500;color:#374151'>Streamlit</div>
-            </div>
-        </div>
+import streamlit.components.v1 as components
 
-        <div style='text-align:right'>
-            <div style='font-size:0.72rem;color:#6B7280;font-family:Inter,sans-serif'>
-                Built by <span style='font-weight:600;color:#1B3A6B'>Vasundhara Shivankar</span>
-            </div>
-            <div style='font-size:0.65rem;color:#9CA3AF;margin-top:2px'>
-                6-Month Python Developer Internship · Codec Technologies
-            </div>
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',Arial,sans-serif; background:transparent; }
+
+  .footer {
+    background:#FFFFFF;
+    border-top:2px solid #E5E7EB;
+    padding:2rem 2rem 1.5rem;
+    width:100%;
+  }
+  .footer-inner { max-width:1400px; margin:0 auto; }
+
+  .top-row {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:2rem;
+    margin-bottom:1.5rem;
+  }
+
+  /* Brand */
+  .brand { min-width:200px; }
+  .brand-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .brand-icon {
+    background:#1B3A6B; border-radius:5px;
+    width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.9rem; flex-shrink:0;
+  }
+  .brand-name { font-size:0.88rem; font-weight:700; color:#111827; }
+  .brand-desc { font-size:0.73rem; color:#6B7280; line-height:1.65; max-width:210px; }
+  .live-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:0.6rem; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:#166534;
+    background:#F0FDF4; border:1px solid #BBF7D0;
+    border-radius:20px; padding:2px 9px; margin-top:10px;
+  }
+  .live-dot {
+    width:5px; height:5px; background:#16A34A;
+    border-radius:50%; display:inline-block;
+    animation:blink 2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* Tech stack */
+  .stack { min-width:300px; }
+  .section-label {
+    font-size:0.6rem; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:#9CA3AF; margin-bottom:10px;
+  }
+  .pills { display:flex; gap:7px; flex-wrap:wrap; max-width:360px; }
+  .pill {
+    background:#F3F4F6; border:1px solid #E5E7EB; color:#374151;
+    font-size:0.7rem; font-weight:500; padding:3px 10px; border-radius:4px;
+  }
+  .pill-blue {
+    background:#EFF6FF; border-color:#BFDBFE; color:#1E40AF;
+  }
+
+  /* Features */
+  .features { min-width:200px; }
+  .feature-row {
+    font-size:0.78rem; color:#374151; line-height:2;
+  }
+
+  /* Built by */
+  .built { text-align:right; min-width:180px; }
+  .built-name { font-size:0.88rem; font-weight:700; color:#1B3A6B; }
+  .built-sub { font-size:0.7rem; color:#6B7280; margin-top:2px; line-height:1.6; }
+  .github-link {
+    display:inline-block; margin-top:10px;
+    font-size:0.72rem; color:#1B3A6B;
+    text-decoration:none; font-weight:500;
+  }
+  .github-link:hover { text-decoration:underline; }
+
+  /* Divider row */
+  .divider-row {
+    border-top:1px solid #F3F4F6;
+    padding-top:1rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .copy { font-size:0.63rem; color:#9CA3AF; }
+  .disclaimer {
+    font-size:0.63rem; color:#C2410C;
+    background:#FFF7ED; border:1px solid #FED7AA;
+    border-radius:4px; padding:3px 10px;
+  }
+</style>
+</head>
+<body>
+<div class="footer">
+  <div class="footer-inner">
+
+    <div class="top-row">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-row">
+          <div class="brand-icon">📈</div>
+          <div class="brand-name">Stock Market Dashboard</div>
         </div>
+        <div class="brand-desc">
+          Real-time market intelligence platform with AI-powered news
+          sentiment analysis and ML-based anomaly detection.
+          Data refreshes every 60 seconds.
+        </div>
+        <div class="live-badge">
+          <span class="live-dot"></span> Live Data
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="stack">
+        <div class="section-label">Tech Stack</div>
+        <div class="pills">
+          <span class="pill">Python 3.11</span>
+          <span class="pill">Streamlit</span>
+          <span class="pill">Plotly</span>
+          <span class="pill">Pandas</span>
+          <span class="pill">yfinance</span>
+          <span class="pill">NumPy</span>
+          <span class="pill">ta</span>
+          <span class="pill pill-blue">FinBERT</span>
+          <span class="pill pill-blue">Scikit-learn</span>
+          <span class="pill pill-blue">Transformers</span>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div class="section-label">Features</div>
+        <div class="feature-row">
+          📊 &nbsp;Live Candlestick &amp; Line Charts<br>
+          📈 &nbsp;SMA · EMA · RSI · MACD · Bollinger Bands<br>
+          🧠 &nbsp;AI News Sentiment — FinBERT NLP<br>
+          🚨 &nbsp;ML Anomaly Detection — Isolation Forest<br>
+          🔁 &nbsp;Multi-Stock Return Comparison<br>
+          ℹ️ &nbsp;Company Fundamentals &amp; Info
+        </div>
+      </div>
+
+      <!-- Built By -->
+      <div class="built">
+        <div class="section-label" style="text-align:right">Built By</div>
+        <div class="built-name">Vasundhara Shivankar</div>
+        <div class="built-sub">
+          6-Month Python Developer Internship<br>
+          Codec Technologies India
+        </div>
+        <a class="github-link"
+           href="https://github.com/VasundharaShivankar/stock-market-dashboard"
+           target="_blank">
+          ⭐ GitHub Repository ↗
+        </a>
+      </div>
+
     </div>
 
-    <div style='
-        margin-top:1rem;
-        padding-top:1rem;
-        border-top:1px solid #F3F4F6;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        flex-wrap:wrap;
-        gap:8px;
-    '>
-        <div style='font-size:0.65rem;color:#9CA3AF;font-family:Inter,sans-serif'>
-            Data refreshes every 60 seconds · Charts powered by Plotly · 
-            AI analysis by FinBERT (ProsusAI) · Anomaly detection by Isolation Forest
-        </div>
-        <div style='font-size:0.65rem;color:#9CA3AF;font-family:Inter,sans-serif'>
-            ⚠ For informational purposes only. Not financial advice.
-        </div>
+    <!-- Bottom row -->
+    <div class="divider-row">
+      <div class="copy">
+        Data via Yahoo Finance &nbsp;·&nbsp;
+        AI by FinBERT (ProsusAI/finbert) &nbsp;·&nbsp;
+        Anomaly detection by Isolation Forest &nbsp;·&nbsp;
+        Deployed on Streamlit Community Cloud
+      </div>
+      <div class="disclaimer">
+        ⚠ For informational purposes only &nbsp;·&nbsp; Not financial advice
+      </div>
     </div>
+
+  </div>
 </div>
-""", unsafe_allow_html=True)
+</body>
+</html>
+""", height=310, scrolling=False)
